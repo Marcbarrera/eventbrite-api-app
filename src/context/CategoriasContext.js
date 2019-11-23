@@ -1,31 +1,46 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
+import axios from 'axios';
 
+// Crear el context
 const CategoriasContext = React.createContext();
 export const CategoriasConsumer = CategoriasContext.Consumer;
 
 class CategoriasProvider extends Component {
 
-    token = '6OPP4XB63PRNKONERW'
+    token = 'L67V4X5CCSO3X675XXIV';
 
-    state = {
+    state = { 
+        categorias : []
+     }
+
+    componentDidMount() {
+        this.obtenerCategorias();
+    }
+
+    obtenerCategorias = async () => {
+
+        let url = `https://www.eventbriteapi.com/v3/categories/?token=${this.token}&locale=es_ES`;
+
+
+        let categorias = await axios.get(url);
+
+        this.setState({
+            categorias : categorias.data.categories
+        })
 
     }
 
-    componentDidMount(){
-        this.obtenerCategorias()
-    }
-
-    obtenerCategorias = () => {
-        
-    }
-
-    render() {
-        return (
-            <div>
-                
-            </div>
-        )
+    render() { 
+        return ( 
+            <CategoriasContext.Provider
+                value={{
+                    categorias : this.state.categorias
+                }}
+            >
+                {this.props.children}
+            </CategoriasContext.Provider>
+        );
     }
 }
-
-export default CategoriasProvider
+ 
+export default CategoriasProvider;
